@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.6'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.liquibase.gradle' version '2.0.4'
+}
+
+group = 'edu.wat.tim'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+	implementation 'org.hibernate.validator:hibernate-validator'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.postgresql:postgresql'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	liquibaseRuntime 'org.liquibase:liquibase-core:4.2.2'
+	liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
+	liquibaseRuntime 'mysql:mysql-connector-java:5.1.34'
+	liquibaseRuntime 'org.postgresql:postgresql'
+}
+
+apply plugin: "org.liquibase.gradle"
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+liquibase {
+	activities {
+		main {
+			changeLogFile "liquibase/changelog.sql"
+			url "jdbc:postgresql://localhost:5432/lab2"
+			username "postgres"
+			password "12345678"
+		}
+	}
+}
